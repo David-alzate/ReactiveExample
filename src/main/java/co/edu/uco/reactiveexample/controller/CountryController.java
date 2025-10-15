@@ -1,8 +1,11 @@
 package co.edu.uco.reactiveexample.controller;
 
 import co.edu.uco.reactiveexample.entity.CountryEntity;
+import co.edu.uco.reactiveexample.publisher.CountryPublisher;
+import co.edu.uco.reactiveexample.publisher.event.CountryEvent;
 import co.edu.uco.reactiveexample.repository.CountryRepository;
 import co.edu.uco.reactiveexample.service.CountryService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,10 +16,17 @@ public class CountryController {
 
     private final CountryService countryService;
     private final CountryRepository countryRepository;
+    private final CountryPublisher countryPublisher;
 
-    public CountryController(CountryService countryService, CountryRepository countryRepository) {
+    public CountryController(CountryService countryService, CountryRepository countryRepository, CountryPublisher countryPublisher) {
         this.countryService = countryService;
         this.countryRepository = countryRepository;
+        this.countryPublisher = countryPublisher;
+    }
+
+    @GetMapping(path = "/events", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<CountryEvent> publishEvents() {
+        return countryPublisher.getStram();
     }
 
     @GetMapping

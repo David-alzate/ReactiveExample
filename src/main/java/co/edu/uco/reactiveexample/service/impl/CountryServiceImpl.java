@@ -32,14 +32,14 @@ public class CountryServiceImpl implements CountryService {
             existingCountry.setDialingCountryCode(countryEntity.getDialingCountryCode());
             existingCountry.setEnabled(countryEntity.isEnabled());
             existingCountry.setIsoCountryCode(countryEntity.getIsoCountryCode());
-            return countryRepository.save(existingCountry);
+            return countryRepository.save(existingCountry).doOnNext(countryPublisher::SendUpdatedEvent);
         });
     }
 
     @Override
     public Mono<CountryEntity> delete(int id) {
         return countryRepository.findById(id).flatMap(existingCountry -> countryRepository.delete(existingCountry)
-                .then(Mono.just(existingCountry)));
+                .doOnSuccess(event -> countryPublisher.SendDeletedEvent(existingCountry)).then(Mono.just(existingCountry)));
     }
 
     @Override

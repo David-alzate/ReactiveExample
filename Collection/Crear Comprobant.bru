@@ -1,0 +1,55 @@
+meta {
+  name: Crear Comprobant
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8085/accountingapi/v1/comprobante
+  body: multipartForm
+  auth: inherit
+}
+
+headers {
+  x-subscription-id: f18e0c65-e878-4609-bfa8-3c54f9472b88
+}
+
+body:multipart-form {
+  comprobante: '''
+    {
+     "estado": "APROBADO",
+      "tipo": {
+        "idTipoComprobante": "50f52b7e-3862-4634-8965-969e630a9793"
+      },
+      "descripcion": "Pago nomina",
+      "fecha": "2025-10-13",
+      "asientos": [
+        {
+          "descripcion": "Compra de mercancía",
+          "email": "contabilidad@empresa.com",
+          "fecha": "2025-08-26T10:30:00Z",
+          "movimientos": [
+            {
+              "cuenta": { "idCuenta": "1b7a3daf-5c7b-4d4b-a61d-9b09ad8ce6ce" },
+              "monto": 1500000.00,
+              "tipo": "DEBITO",
+               "clientUuid": "a47ef306-ca98-4cfe-9f3b-540c7905aded"
+            },
+            {
+              "cuenta": { "idCuenta": "1b7a3daf-5c7b-4d4b-a61d-9b09ad8ce6ce" },
+              "monto": 1500000.00,
+              "tipo": "CREDITO",
+              "clientUuid": "a47ef306-ca98-4cfe-9f3b-540c7905aded"
+            }
+          ]
+        }
+      ]
+    }
+    
+  ''' @contentType(application/json)
+  file: @file(/home/david-alzate/Descargas/ejemploFacturaVenta.pdf)
+}
+
+settings {
+  encodeUrl: true
+}

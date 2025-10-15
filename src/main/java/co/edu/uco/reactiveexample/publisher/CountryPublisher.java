@@ -3,6 +3,7 @@ package co.edu.uco.reactiveexample.publisher;
 import co.edu.uco.reactiveexample.entity.CountryEntity;
 import co.edu.uco.reactiveexample.publisher.event.CountryEvent;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 @Component
@@ -20,6 +21,10 @@ public class CountryPublisher {
 
     public void SendDeletedEvent(CountryEntity countryEntity) {
         sink.tryEmitNext(new CountryEvent(countryEntity, CountryEvent.EventType.DELETED));
+    }
+
+    public Flux<CountryEvent> getStram() {
+        return sink.asFlux();
     }
 
 }
